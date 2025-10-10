@@ -14,111 +14,183 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
- * This is NOT an opmode.
- *
- * This class can be used to define all the specific hardware for a single robot.
- * In this case that robot is a Pushbot.
- * See PushbotTeleopTank_Iterative and others classes starting with "Pushbot" for usage examples.
- *
- * This hardware class assumes the following device names have been configured on the robot:
- * Note:  All names are lower case and some have single spaces between words.
- *
- * Motor channel:  Left  drive motor:        "left_drive"
- * Motor channel:  Right drive motor:        "right_drive"
- * Motor channel:  Manipulator drive motor:  "left_arm"
- * Servo channel:  Servo to open left claw:  "left_hand"
- * Servo channel:  Servo to open right claw: "right_hand"
+ * HARDWARE CONFIGURATION CLASS
+ * ============================
+ * 
+ * This is NOT an OpMode - it cannot be selected from the Driver Station.
+ * 
+ * PURPOSE:
+ * This class defines all the hardware (motors, servos, sensors) for the robot.
+ * It acts as a central place to declare and initialize all hardware devices.
+ * Both TeleOp and Autonomous modes will use this class to access robot hardware.
+ * 
+ * HOW IT WORKS:
+ * 1. Declare all motors/servos as public variables
+ * 2. In init(), map these variables to actual hardware using the hardware map
+ * 3. Set initial directions, power levels, and encoder modes
+ * 4. OpModes call robot.init(hardwareMap) to initialize everything
+ * 
+ * IMPORTANT:
+ * The names in the hwMap.get() statements MUST EXACTLY MATCH the names 
+ * you configure in the REV Driver Hub configuration!
+ * 
+ * CURRENT ROBOT CONFIGURATION:
+ * Motors:
+ *   - frontLeftDrive    : Front left mecanum wheel
+ *   - frontRightDrive   : Front right mecanum wheel
+ *   - backLeftDrive     : Back left mecanum wheel
+ *   - backRightDrive    : Back right mecanum wheel
+ *   - elevator          : Linear slide for game elements
+ * 
+ * Servos:
+ *   (Add servo documentation here as you add them)
  */
 public class HardwarePushbot
 {
-    /* Public OpMode members. */
-
-    // STEP 1
-    // This is where you declare your motors and servos
-    // Follow the outline below if you need any extra servos/motors
-    // Use good naming convention
+    // =============================================================================
+    // STEP 1: DECLARE MOTORS AND SERVOS
+    // =============================================================================
+    // All hardware devices must be declared here as public variables
+    // This makes them accessible from OpModes (TeleOp and Autonomous)
     
-    // TEMPLATE
-    // public DcMotor name = null;    
+    // ===== DRIVE MOTORS =====
+    // Mecanum drive train - 4 motors for omnidirectional movement
     public DcMotor  frontLeftDrive = null;
     public DcMotor  frontRightDrive = null;
     public DcMotor  backLeftDrive = null;
     public DcMotor  backRightDrive = null;
-    public DcMotor  elevator = null;
+    
+    // ===== MANIPULATOR MOTORS =====
+    public DcMotor  elevator = null;  // Linear slide mechanism
 
-    // Naming convention for servos
-    // TEMPLATE
-    // public Servo name = null; 
+    // ===== SERVOS =====
+    // Add servos here following this template:
+    // public Servo servoName = null;
+    // Example: public Servo claw = null;
+    
+    // ===== SENSORS =====
+    // Add sensors here following these templates:
+    // public ColorSensor colorSensor = null;
+    // public DistanceSensor distanceSensor = null;
+    // public TouchSensor touchSensor = null;
 
-    /* local OpMode members. */
-    HardwareMap hwMap           =  null;
-    private ElapsedTime period  = new ElapsedTime();
+    // ===== INTERNAL VARIABLES =====
+    /* local OpMode members - not typically accessed from OpModes */
+    HardwareMap hwMap           =  null;       // Hardware map from robot controller
+    private ElapsedTime period  = new ElapsedTime();  // Timer for internal use
 
-    /* Constructor */
+    // =============================================================================
+    // CONSTRUCTOR
+    // =============================================================================
+    /* Constructor - called when creating a new HardwarePushbot object */
     public HardwarePushbot(){
-
+        // Constructor body is empty - initialization happens in init()
     }
 
-    /* Initialize standard Hardware interfaces */
+    // =============================================================================
+    // STEP 2: INITIALIZE HARDWARE
+    // =============================================================================
+    /**
+     * Initialize all hardware devices
+     * This method is called from OpModes with: robot.init(hardwareMap);
+     * 
+     * @param ahwMap The hardware map from the OpMode
+     */
     public void init(HardwareMap ahwMap) 
     {
         // Save reference to Hardware map
         hwMap = ahwMap;
 
-        // STEP 2
-        // Define and Initialize Motors
-        // This is where you use the Hardware map to name each motor and servo
-        // The string inside of the quotations is the name that goes into the HW configuration
-        // in the REV driver station
-        // Use good naming conventions please and copy paste from the template shown below 
+        // ===== MAP HARDWARE DEVICES =====
+        // Connect declared variables to actual hardware using the hardware map
+        // The strings MUST MATCH the names in your Robot Controller configuration!
+        // 
+        // TEMPLATE for adding new devices:
+        // motorName = hwMap.get(DcMotor.class, "configurationName");
+        // servoName = hwMap.get(Servo.class, "configurationName");
+        // sensorName = hwMap.get(SensorType.class, "configurationName");
 
-        // TEMPLATE
-        // name = hwMap.get(DcMotor.class, "name");
-        // name = hwMap.get(Servo.class, "name");
-
+        // Drive motors
         frontLeftDrive  = hwMap.get(DcMotor.class, "frontLeftDrive");
         frontRightDrive = hwMap.get(DcMotor.class, "frontRightDrive");
         backLeftDrive = hwMap.get(DcMotor.class, "backLeftDrive");
         backRightDrive= hwMap.get(DcMotor.class, "backRightDrive");
+        
+        // Manipulator motors
         elevator = hwMap.get(DcMotor.class, "elevator");
 
-        // STEP 3
-        // This is where you will set the default direction
-        // each motor will be set to forward always
-        // TEMPLATE 
-        // name.setDirection(DcMotor.Direction.FORWARD);
+        // =============================================================================
+        // STEP 3: SET MOTOR DIRECTIONS
+        // =============================================================================
+        // Set the default direction for each motor
+        // FORWARD or REVERSE depends on how the motor is physically mounted
+        // If your robot moves backward when you push forward on the joystick,
+        // you need to REVERSE one or more motor directions
+        //
+        // TEMPLATE:
+        // motorName.setDirection(DcMotor.Direction.FORWARD);
+        // motorName.setDirection(DcMotor.Direction.REVERSE);
+        
         frontLeftDrive.setDirection(DcMotor.Direction.FORWARD); 
         frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
         backLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         backRightDrive.setDirection(DcMotor.Direction.FORWARD);
         elevator.setDirection(DcMotor.Direction.FORWARD);
         
-        // STEP 4
-        // Set all motors to zero power
-        // TEMPLATE
-        // name.setPower(0);
+        // =============================================================================
+        // STEP 4: SET INITIAL MOTOR POWERS
+        // =============================================================================
+        // Set all motors to zero power for safety
+        // Motors should always start stopped
+        //
+        // TEMPLATE:
+        // motorName.setPower(0);
+        
         frontLeftDrive.setPower(0);
         frontRightDrive.setPower(0);
         backLeftDrive.setPower(0);
         backRightDrive.setPower(0);
         elevator.setPower(0);
         
-        // STEP 5
-        //Set all motors to run using encoders.
-        // TEMPLATE 
-        // name.setMode(DcMotor.RunMode.RUN_USING_ENCODERS);
-        // Note: replace "USING" with "WITHOUT" if encoders are not being implemented 
-        frontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODERS);
-        frontRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODERS);
-        backLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODERS);
-        backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODERS);
-        elevator.setMode(DcMotor.RunMode.RUN_USING_ENCODERS);
+        // =============================================================================
+        // STEP 5: SET ENCODER MODES
+        // =============================================================================
+        // Configure how motors use their built-in encoders
+        // 
+        // ENCODER MODES:
+        // - RUN_USING_ENCODER: Uses encoder for speed control (recommended for drive)
+        // - RUN_WITHOUT_ENCODER: Ignores encoder (use if encoder is broken)
+        // - RUN_TO_POSITION: Automatically moves to target position (used in autonomous)
+        // - STOP_AND_RESET_ENCODER: Resets encoder count to zero
+        //
+        // TEMPLATE:
+        // motorName.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        // motorName.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        
+        frontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        elevator.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        // Now all the work in Hardware pushbot is done! 
-        // The teleop will "call" this program so it has access to all of the motors/servos on the robot 
-        // Now you must wire and configure the robot on the REV driver hub
-        // MAKE SURE THAT THE NAMES MATCH IN THIS PROGRAM AND CONFIGURATION
-        
-        
+        // =============================================================================
+        // INITIALIZATION COMPLETE!
+        // =============================================================================
+        // The robot hardware is now fully initialized and ready to use.
+        // OpModes can now access motors/servos through this robot object.
+        //
+        // NEXT STEPS:
+        // 1. Wire all motors and sensors to the REV Control Hub
+        // 2. Create/edit robot configuration in Driver Station
+        // 3. Ensure configuration names EXACTLY MATCH the strings above
+        // 4. Test each motor individually before running full programs
+        //
+        // CONFIGURATION NAMES MUST MATCH:
+        // - frontLeftDrive
+        // - frontRightDrive  
+        // - backLeftDrive
+        // - backRightDrive
+        // - elevator
+        // =============================================================================
     }
 }
