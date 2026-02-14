@@ -384,4 +384,40 @@ public class IntoTheDeepAutonomousTemplate extends LinearOpMode  {
         robot.elevator.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         sleep(200);
     }
+    
+    /**
+     * Move the robot forward/backward while simultaneously operating the intake mechanism
+     * This allows collecting/ejecting game elements while driving
+     * 
+     * @param driveSpeed Motor power for drive motors (0.0 to 1.0)
+     * @param driveInches Distance to travel (positive=forward, negative=backward)
+     * @param intakePower Power for intake motor (-1.0 to 1.0, positive=in, negative=out)
+     * @param timeoutS Maximum time to wait for movement to complete
+     * 
+     * USAGE EXAMPLES:
+     * - driveWithIntake(0.5, 24, 1.0, 5.0);   // Drive forward 24 inches while intaking
+     * - driveWithIntake(0.5, -24, -1.0, 5.0); // Drive backward 24 inches while ejecting
+     * - driveWithIntake(0.4, 12, 0.5, 3.0);   // Drive forward slowly while intaking at half power
+     */
+    public void driveWithIntake(double driveSpeed, double driveInches, 
+                                double intakePower, double timeoutS) 
+    {
+        // Start the intake motor at the specified power
+        robot.intake.setPower(intakePower);
+        
+        // Use existing forward/backward methods based on direction
+        if (driveInches >= 0) 
+        {
+            // Positive distance = move forward
+            forward(driveSpeed, driveInches, timeoutS);
+        } 
+        else 
+        {
+            // Negative distance = move backward
+            backward(driveSpeed, Math.abs(driveInches), timeoutS);
+        }
+        
+        // Stop the intake motor after movement completes
+        robot.intake.setPower(0);
+    }
 }

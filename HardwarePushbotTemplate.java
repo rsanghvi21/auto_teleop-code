@@ -62,6 +62,7 @@ public class HardwarePushbot
     
     // ===== MANIPULATOR MOTORS =====
     public DcMotor  elevator = null;  // Linear slide mechanism
+    public DcMotor  intake = null;    // Intake mechanism for collecting game elements
 
     // ===== SERVOS =====
     // Add servos here following this template:
@@ -118,6 +119,7 @@ public class HardwarePushbot
         
         // Manipulator motors
         elevator = hwMap.get(DcMotor.class, "elevator");
+        intake = hwMap.get(DcMotor.class, "intake");
 
         // =============================================================================
         // STEP 3: SET MOTOR DIRECTIONS
@@ -136,6 +138,7 @@ public class HardwarePushbot
         backLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         backRightDrive.setDirection(DcMotor.Direction.FORWARD);
         elevator.setDirection(DcMotor.Direction.FORWARD);
+        intake.setDirection(DcMotor.Direction.FORWARD);
         
         // =============================================================================
         // STEP 4: SET INITIAL MOTOR POWERS
@@ -151,6 +154,7 @@ public class HardwarePushbot
         backLeftDrive.setPower(0);
         backRightDrive.setPower(0);
         elevator.setPower(0);
+        intake.setPower(0);
         
         // =============================================================================
         // STEP 5: SET ENCODER MODES
@@ -172,6 +176,7 @@ public class HardwarePushbot
         backLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         elevator.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        intake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // =============================================================================
         // INITIALIZATION COMPLETE!
@@ -191,6 +196,7 @@ public class HardwarePushbot
         // - backLeftDrive
         // - backRightDrive
         // - elevator
+        // - intake
         // =============================================================================
     }
 }
